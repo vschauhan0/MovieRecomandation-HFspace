@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
@@ -20,8 +20,9 @@ jobs:
       - name: Push to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+
         run: |
-          git config --global user.email "you@example.com"
+          git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
 
           git remote add space https://vschauhan0:$HF_TOKEN@huggingface.co/spaces/vschauhan0/movies-recomandation-system
