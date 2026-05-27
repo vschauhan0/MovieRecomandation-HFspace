@@ -4,20 +4,16 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          lfs: true
 
-      - name: Push to Hugging Face
+      - name: Push to HF
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
 
@@ -25,6 +21,14 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
 
-          git remote add space https://vschauhan0:$HF_TOKEN@huggingface.co/spaces/vschauhan0/movies-recomandation-system
+          git clone https://vschauhan0:$HF_TOKEN@huggingface.co/spaces/vschauhan0/movies-recomandation-system hf-space
 
-          git push --force space main
+          rsync -av --exclude='.git' ./ hf-space/
+
+          cd hf-space
+
+          git add .
+
+          git commit -m "Sync from GitHub" || echo "No changes"
+
+          git push
